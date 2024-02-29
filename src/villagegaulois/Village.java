@@ -8,14 +8,17 @@ public class Village {
 	private Chef chef;
 	private Gaulois[] villageois;
 	private int nbVillageois = 0;
+	private int nbEtalsMax;
+	private Marche marche = new Marche(nbEtalsMax);
 
 	public Village(String nom, int nbVillageoisMaximum, int nbEtalsMax) {
 		this.nom = nom;
+		this.nbEtalsMax = nbEtalsMax;
 		villageois = new Gaulois[nbVillageoisMaximum];
-		Marche m = new Marche(nbEtalsMax);
+		//Marche marche = new Marche(nbEtalsMax);
 	}
 
-	static class Marche {
+	private static class Marche {
 		private Etal etals[];
 		private int nbEtals = 0;
 
@@ -23,11 +26,11 @@ public class Village {
 			etals = new Etal[nbEtalsMaximum];
 		}
 
-		public void utiliserEtal(int indiceEtal, Gaulois vendeur, String produit, int nbProduit) {
+		private void utiliserEtal(int indiceEtal, Gaulois vendeur, String produit, int nbProduit) {
 			etals[indiceEtal].occuperEtal(vendeur, produit, nbProduit);
 		}
 
-		public int trouverEtalLibre() {
+		private int trouverEtalLibre() {
 			for (int i = 0; i < etals.length; i++) {
 				if (!etals[i].isEtalOccupe()) {
 					return i;
@@ -36,7 +39,7 @@ public class Village {
 			return -1;
 		}
 
-		public Etal[] trouverEtals(String produit) {
+		private Etal[] trouverEtals(String produit) {
 			int templength = 0;
 			for (int i = 0; i < etals.length; i++) {
 				if (etals[i].contientProduit(produit)) {
@@ -54,7 +57,7 @@ public class Village {
 			return temp;
 		}
 
-		public Etal trouverVendeur(Gaulois gaulois) {
+		private Etal trouverVendeur(Gaulois gaulois) {
 			for (int i = 0; i < etals.length; i++) {
 				if (etals[i].getVendeur() == gaulois) {
 					return etals[i];
@@ -64,7 +67,7 @@ public class Village {
 
 		}
 
-		public String afficherMarche() {
+		private String afficherMarche() {
 			StringBuilder chaine = new StringBuilder();
 			int nbEtalVide = 0;
 			if (etals.length < 1) {
@@ -80,6 +83,13 @@ public class Village {
 				chaine.append("Il reste" + nbEtalVide + "étals non utilisés dans le marché.\n");
 
 			return chaine.toString();
+		}
+	}
+	
+	public String installerVendeur(Gaulois vendeur,String produit, int nbProduit) {
+		if(marche.trouverEtalLibre()!= -1) {
+			int indiceEtal = marche.trouverEtalLibre();
+			marche.utiliserEtal(indiceEtal, vendeur, produit, nbProduit);
 		}
 	}
 
