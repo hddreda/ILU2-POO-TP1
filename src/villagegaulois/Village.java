@@ -86,12 +86,60 @@ public class Village {
 		}
 	}
 	
-	public String installerVendeur(Gaulois vendeur,String produit, int nbProduit) {
-		if(marche.trouverEtalLibre()!= -1) {
-			int indiceEtal = marche.trouverEtalLibre();
-			marche.utiliserEtal(indiceEtal, vendeur, produit, nbProduit);
-		}
+	public String installerVendeur(Gaulois vendeur, String produit, int nbProduit) {
+	    StringBuilder message = new StringBuilder();
+	    message.append("Le vendeur ");
+        message.append(vendeur.getNom());
+        message.append("cherche un endroit pour vendre ");
+        message.append(nbProduit);
+        message.append(produit);
+        message.append(".");
+
+	    int indiceEtal = marche.trouverEtalLibre();
+	    if (indiceEtal != -1) {
+	        marche.utiliserEtal(indiceEtal, vendeur, produit, nbProduit);
+	        message.append("Le vendeur ");
+	        message.append(vendeur.getNom());
+	        message.append(" vend des ");
+	        message.append(produit);
+	        message.append(" à l'étal n°");
+	        message.append(indiceEtal);
+	        message.append(".");
+	    } else {
+	        message.append("Aucun étal libre n'est disponible.");
+	    }
+
+	    return message.toString();
 	}
+	
+	public String rechercherVendeursProduit(String produit) {
+	    StringBuilder message = new StringBuilder();
+
+	    Etal[] etals = marche.trouverEtals(produit);
+	    if (etals.length == 0) {
+	        message.append("Il n'y a pas de vendeur qui propose des ");
+	        message.append(produit);
+	        message.append(" au marché.");
+	    } else if (etals.length == 1) {
+	        message.append("Seul le vendeur ");
+	        message.append(etals[0].getVendeur().getNom());
+	        message.append(" propose des ");
+	        message.append(produit);
+	        message.append(" au marché.");
+	    } else {
+	        message.append("Les vendeurs qui proposent des ");
+	        message.append(produit);
+	        message.append(" sont :");
+	        for (Etal etal : etals) {
+	            message.append("\n- ");
+	            message.append(etal.getVendeur().getNom());
+	        }
+	    }
+
+	    return message.toString();
+	}
+
+
 
 	public String getNom() {
 		return nom;
